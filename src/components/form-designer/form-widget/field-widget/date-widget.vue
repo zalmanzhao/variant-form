@@ -2,15 +2,20 @@
   <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <el-date-picker ref="fieldEditor" :type="field.options.type" v-model="fieldModel" class="full-width-input"
-                    :readonly="field.options.readonly" :disabled="field.options.disabled"
-                    :size="field.options.size"
-                    :clearable="field.options.clearable" :editable="field.options.editable"
-                    :format="field.options.format" :value-format="field.options.valueFormat"
-                    :placeholder="field.options.placeholder || i18nt('render.hint.datePlaceholder')"
-                    @focus="handleFocusCustomEvent" @blur="handleBlurCustomEvent"
-                    @change="handleChangeEvent">
-    </el-date-picker>
+    <template v-if="previewState">
+      {{ fieldModel }}
+    </template>
+    <template v-else>
+      <el-date-picker ref="fieldEditor" :type="field.options.type" v-model="fieldModel" class="full-width-input"
+                      :readonly="field.options.readonly" :disabled="field.options.disabled"
+                      :size="field.options.size"
+                      :clearable="field.options.clearable" :editable="field.options.editable"
+                      :format="field.options.format" :value-format="field.options.valueFormat"
+                      :placeholder="field.options.placeholder || i18nt('render.hint.datePlaceholder')"
+                      @focus="handleFocusCustomEvent" @blur="handleBlurCustomEvent"
+                      @change="handleChangeEvent">
+      </el-date-picker>
+    </template>
   </form-item-wrapper>
 </template>
 

@@ -2,21 +2,27 @@
   <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <el-input ref="fieldEditor" v-model="fieldModel"
-              :disabled="field.options.disabled" :readonly="field.options.readonly"
-              :size="field.options.size" class="hide-spin-button"
-              :type="inputType"
-              :show-password="field.options.showPassword"
-              :placeholder="field.options.placeholder"
-              :clearable="field.options.clearable"
-              :minlength="field.options.minLength" :maxlength="field.options.maxLength"
-              :show-word-limit="field.options.showWordLimit"
-              :prefix-icon="field.options.prefixIcon" :suffix-icon="field.options.suffixIcon"
-              @focus="handleFocusCustomEvent" @blur="handleBlurCustomEvent" @input="handleInputCustomEvent"
-              @change="handleChangeEvent">
-      <el-button slot="append" v-if="field.options.appendButton" :disabled="field.options.disabled || field.options.appendButtonDisabled"
-                 :class="field.options.buttonIcon" @click.native="emitAppendButtonClick"></el-button>
-    </el-input>
+    <template v-if="previewState">
+      {{ fieldModel }}
+    </template>
+    <template v-else>
+      {{ fieldModel }}
+      <el-input ref="fieldEditor" v-model="fieldModel"
+                :disabled="field.options.disabled" :readonly="field.options.readonly"
+                :size="field.options.size" class="hide-spin-button"
+                :type="inputType"
+                :show-password="field.options.showPassword"
+                :placeholder="field.options.placeholder"
+                :clearable="field.options.clearable"
+                :minlength="field.options.minLength" :maxlength="field.options.maxLength"
+                :show-word-limit="field.options.showWordLimit"
+                :prefix-icon="field.options.prefixIcon" :suffix-icon="field.options.suffixIcon"
+                @focus="handleFocusCustomEvent" @blur="handleBlurCustomEvent" @input="handleInputCustomEvent"
+                @change="handleChangeEvent">
+        <el-button slot="append" v-if="field.options.appendButton" :disabled="field.options.disabled || field.options.appendButtonDisabled"
+                  :class="field.options.buttonIcon" @click.native="emitAppendButtonClick"></el-button>
+      </el-input>
+    </template>
   </form-item-wrapper>
 </template>
 
@@ -30,6 +36,7 @@
     name: "input-widget",
     componentName: 'FieldWidget',  //必须固定为FieldWidget，用于接收父级组件的broadcast事件
     mixins: [emitter, fieldMixin, i18n],
+    inject: ['previewState'],
     props: {
       field: Object,
       parentWidget: Object,

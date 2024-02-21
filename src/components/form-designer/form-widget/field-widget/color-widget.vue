@@ -2,11 +2,16 @@
   <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <el-color-picker ref="fieldEditor" v-model="fieldModel"
-                     :size="field.options.size"
-                     :disabled="field.options.disabled"
-                     @change="handleChangeEvent">
-    </el-color-picker>
+    <template v-if="previewState">
+      <div style="width: 32px; height: 32px; margin-top: 6px; border-radius: 3px" :style="{'background-color': fieldModel}" />
+    </template>
+    <template v-else>
+      <el-color-picker ref="fieldEditor" v-model="fieldModel"
+                      :size="field.options.size"
+                      :disabled="field.options.disabled"
+                      @change="handleChangeEvent">
+      </el-color-picker>
+    </template>
   </form-item-wrapper>
 </template>
 

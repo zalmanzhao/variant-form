@@ -2,15 +2,20 @@
   <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <el-input type="textarea" ref="fieldEditor" v-model="fieldModel"
-              :disabled="field.options.disabled" :readonly="field.options.readonly"
-              :size="field.options.size"
-              :placeholder="field.options.placeholder" :rows="field.options.rows"
-              :minlength="field.options.minLength" :maxlength="field.options.maxLength"
-              :show-word-limit="field.options.showWordLimit"
-              @focus="handleFocusCustomEvent" @blur="handleBlurCustomEvent" @input="handleInputCustomEvent"
-              @change="handleChangeEvent">
-    </el-input>
+    <template v-if="previewState">
+      {{ fieldModel }}
+    </template>
+    <template v-else>
+      <el-input type="textarea" ref="fieldEditor" v-model="fieldModel"
+                :disabled="field.options.disabled" :readonly="field.options.readonly"
+                :size="field.options.size"
+                :placeholder="field.options.placeholder" :rows="field.options.rows"
+                :minlength="field.options.minLength" :maxlength="field.options.maxLength"
+                :show-word-limit="field.options.showWordLimit"
+                @focus="handleFocusCustomEvent" @blur="handleBlurCustomEvent" @input="handleInputCustomEvent"
+                @change="handleChangeEvent">
+      </el-input>
+    </template>
   </form-item-wrapper>
 </template>
 

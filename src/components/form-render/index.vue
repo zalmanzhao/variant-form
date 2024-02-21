@@ -25,7 +25,7 @@
       </template>
       <template v-else>
         <component :is="getWidgetName(widget)" :field="widget" :form-model="formDataModel" :designer="null" :key="widget.id" :parent-list="widgetList"
-                      :index-of-parent-list="index" :parent-widget="null">
+                      :index-of-parent-list="index" :parent-widget="null" :preview-state="previewState">
           <!-- 递归传递插槽！！！ -->
           <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
             <slot :name="slot" v-bind="scope"/>
@@ -91,7 +91,6 @@
         globalModel: {
           formModel: this.formDataModel,
         },
-        previewState: this.previewState,
       }
     },
     data() {

@@ -52,7 +52,7 @@
       globalDsv: {
         type: Object,
         default: () => ({})
-      },
+      }
     },
     provide() {
       return {

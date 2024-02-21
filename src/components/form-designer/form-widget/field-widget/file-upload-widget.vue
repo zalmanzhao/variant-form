@@ -2,28 +2,38 @@
   <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <!-- el-upload增加:name="field.options.name"后，会导致又拍云上传失败！故删除之！！ -->
-    <el-upload ref="fieldEditor" :disabled="field.options.disabled"
-               :style="styleVariables" class="dynamicPseudoAfter"
-               :action="realUploadURL" :headers="uploadHeaders" :data="uploadData"
-               :with-credentials="field.options.withCredentials"
-               :multiple="field.options.multipleSelect" :file-list="fileList"
-               :show-file-list="field.options.showFileList" :class="{'hideUploadDiv': uploadBtnHidden}"
-               :limit="field.options.limit" :on-exceed="handleFileExceed" :before-upload="beforeFileUpload"
-               :on-success="handleFileUpload" :on-error="handleUploadError">
-      <div slot="tip" class="el-upload__tip"
-           v-if="!!field.options.uploadTip">{{field.options.uploadTip}}</div>
-      <i slot="default" class="el-icon-plus avatar-uploader-icon"></i>
-      <template #file="{ file }">
-        <div class="upload-file-list">
-          <span class="upload-file-name" :title="file.name">{{file.name}}</span>
-          <a :href="file.url" download="" target="_blank">
-            <i class="el-icon-download file-action" :title="i18nt('render.hint.downloadFile')"></i></a>
-          <i class="el-icon-delete file-action" :title="i18nt('render.hint.removeFile')" v-if="!field.options.disabled"
-             @click="removeUploadFile(file.name, file.url, file.uid)"></i>
-        </div>
-      </template>
-    </el-upload>
+    <template v-if="previewState">
+      <div class="upload-file-list" v-for="(file, index) of fileList" :key="index">
+        <span class="upload-file-name" :title="file.name">{{file.name}}</span>
+        <a :href="file.url" download="" target="_blank">
+          <i class="el-icon-download file-action" :title="i18nt('render.hint.downloadFile')"></i>
+        </a>
+      </div>
+    </template>
+    <template v-else>
+      <!-- el-upload增加:name="field.options.name"后，会导致又拍云上传失败！故删除之！！ -->
+      <el-upload ref="fieldEditor" :disabled="field.options.disabled"
+                :style="styleVariables" class="dynamicPseudoAfter"
+                :action="realUploadURL" :headers="uploadHeaders" :data="uploadData"
+                :with-credentials="field.options.withCredentials"
+                :multiple="field.options.multipleSelect" :file-list="fileList"
+                :show-file-list="field.options.showFileList" :class="{'hideUploadDiv': uploadBtnHidden}"
+                :limit="field.options.limit" :on-exceed="handleFileExceed" :before-upload="beforeFileUpload"
+                :on-success="handleFileUpload" :on-error="handleUploadError">
+        <div slot="tip" class="el-upload__tip"
+            v-if="!!field.options.uploadTip">{{field.options.uploadTip}}</div>
+        <i slot="default" class="el-icon-plus avatar-uploader-icon"></i>
+        <template #file="{ file }">
+          <div class="upload-file-list">
+            <span class="upload-file-name" :title="file.name">{{file.name}}</span>
+            <a :href="file.url" download="" target="_blank">
+              <i class="el-icon-download file-action" :title="i18nt('render.hint.downloadFile')"></i></a>
+            <i class="el-icon-delete file-action" :title="i18nt('render.hint.removeFile')" v-if="!field.options.disabled"
+              @click="removeUploadFile(file.name, file.url, file.uid)"></i>
+          </div>
+        </template>
+      </el-upload>
+    </template>
   </form-item-wrapper>
 </template>
 

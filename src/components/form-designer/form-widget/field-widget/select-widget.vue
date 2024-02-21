@@ -2,23 +2,28 @@
   <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <el-select ref="fieldEditor" v-model="fieldModel" class="full-width-input"
-               :disabled="field.options.disabled"
-               :size="field.options.size"
-               :clearable="field.options.clearable"
-               :filterable="field.options.filterable"
-               :allow-create="field.options.allowCreate"
-               :default-first-option="allowDefaultFirstOption"
-               :automatic-dropdown="field.options.automaticDropdown"
-               :multiple="field.options.multiple" :multiple-limit="field.options.multipleLimit"
-               :placeholder="field.options.placeholder || i18nt('render.hint.selectPlaceholder')"
-               :remote="field.options.remote" :remote-method="remoteMethod"
-               @focus="handleFocusCustomEvent" @blur="handleBlurCustomEvent"
-               @change="handleChangeEvent">
-      <el-option v-for="item in field.options.optionItems" :key="item.value" :label="item.label"
-                 :value="item.value" :disabled="item.disabled">
-      </el-option>
-    </el-select>
+    <template v-if="previewState">
+      {{ field.options.multiple ? getLabels() : getLabel() }}
+    </template>
+    <template v-else>
+      <el-select ref="fieldEditor" v-model="fieldModel" class="full-width-input"
+                :disabled="field.options.disabled"
+                :size="field.options.size"
+                :clearable="field.options.clearable"
+                :filterable="field.options.filterable"
+                :allow-create="field.options.allowCreate"
+                :default-first-option="allowDefaultFirstOption"
+                :automatic-dropdown="field.options.automaticDropdown"
+                :multiple="field.options.multiple" :multiple-limit="field.options.multipleLimit"
+                :placeholder="field.options.placeholder || i18nt('render.hint.selectPlaceholder')"
+                :remote="field.options.remote" :remote-method="remoteMethod"
+                @focus="handleFocusCustomEvent" @blur="handleBlurCustomEvent"
+                @change="handleChangeEvent">
+        <el-option v-for="item in field.options.optionItems" :key="item.value" :label="item.label"
+                  :value="item.value" :disabled="item.disabled">
+        </el-option>
+      </el-select>
+    </template>
   </form-item-wrapper>
 </template>
 
@@ -108,7 +113,25 @@
     },
 
     methods: {
-
+      getLabel () {
+       const item = this.field.options.optionItems.find(item => item.value === this.fieldModel);
+       if (item) {
+        return item.label
+       }
+       return this.fieldModel
+      },
+      getLabels () {
+       let label = []
+       if (this.fieldModel != null) {
+        this.fieldModel.forEach(element => {
+          const item = this.field.options.optionItems.find(item => item.value === element);
+          if (item) {
+            label.push(item.label)
+          }
+        });
+       }
+       return label.join(' ')
+      }
     }
   }
 </script>

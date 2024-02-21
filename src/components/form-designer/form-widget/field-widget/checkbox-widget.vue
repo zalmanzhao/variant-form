@@ -2,20 +2,25 @@
   <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <el-checkbox-group ref="fieldEditor" v-model="fieldModel"
-                       :disabled="field.options.disabled" :size="field.options.size"
-                       @change="handleChangeEvent">
-      <template v-if="!!field.options.buttonStyle">
-        <el-checkbox-button v-for="(item, index) in field.options.optionItems" :key="index" :label="item.value"
-                            :disabled="item.disabled" :border="field.options.border"
-                            :style="{display: field.options.displayStyle}">{{item.label}}</el-checkbox-button>
-      </template>
-      <template v-else>
-        <el-checkbox v-for="(item, index) in field.options.optionItems" :key="index" :label="item.value"
-                     :disabled="item.disabled" :border="field.options.border"
-                     :style="{display: field.options.displayStyle}">{{item.label}}</el-checkbox>
-      </template>
-    </el-checkbox-group>
+    <template v-if="previewState">
+      {{ getLabels() }}
+    </template>
+    <template v-else>
+      <el-checkbox-group ref="fieldEditor" v-model="fieldModel"
+                        :disabled="field.options.disabled" :size="field.options.size"
+                        @change="handleChangeEvent">
+        <template v-if="!!field.options.buttonStyle">
+          <el-checkbox-button v-for="(item, index) in field.options.optionItems" :key="index" :label="item.value"
+                              :disabled="item.disabled" :border="field.options.border"
+                              :style="{display: field.options.displayStyle}">{{item.label}}</el-checkbox-button>
+        </template>
+        <template v-else>
+          <el-checkbox v-for="(item, index) in field.options.optionItems" :key="index" :label="item.value"
+                      :disabled="item.disabled" :border="field.options.border"
+                      :style="{display: field.options.displayStyle}">{{item.label}}</el-checkbox>
+        </template>
+      </el-checkbox-group>
+    </template>
   </form-item-wrapper>
 </template>
 
@@ -94,7 +99,18 @@
     },
 
     methods: {
-
+      getLabels () {
+       let label = []
+       if (this.fieldModel != null) {
+        this.fieldModel.forEach(element => {
+          const item = this.field.options.optionItems.find(item => item.value === element);
+          if (item) {
+            label.push(item.label)
+          }
+        });
+       }
+       return label.join(' ')
+      }
     }
   }
 </script>

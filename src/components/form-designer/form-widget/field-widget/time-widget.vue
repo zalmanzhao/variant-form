@@ -2,15 +2,20 @@
   <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <el-time-picker ref="fieldEditor" v-model="fieldModel" class="full-width-input"
-                    :disabled="field.options.disabled" :readonly="field.options.readonly"
-                    :size="field.options.size"
-                    :clearable="field.options.clearable" :editable="field.options.editable"
-                    :format="field.options.format" value-format="HH:mm:ss"
-                    :placeholder="field.options.placeholder || i18nt('render.hint.timePlaceholder')"
-                    @focus="handleFocusCustomEvent" @blur="handleBlurCustomEvent"
-                    @change="handleChangeEvent">
-    </el-time-picker>
+    <template v-if="previewState">
+      {{ fieldModel }}
+    </template>
+    <template v-else>
+      <el-time-picker ref="fieldEditor" v-model="fieldModel" class="full-width-input"
+                      :disabled="field.options.disabled" :readonly="field.options.readonly"
+                      :size="field.options.size"
+                      :clearable="field.options.clearable" :editable="field.options.editable"
+                      :format="field.options.format" value-format="HH:mm:ss"
+                      :placeholder="field.options.placeholder || i18nt('render.hint.timePlaceholder')"
+                      @focus="handleFocusCustomEvent" @blur="handleBlurCustomEvent"
+                      @change="handleChangeEvent">
+      </el-time-picker>
+    </template>
   </form-item-wrapper>
 </template>
 

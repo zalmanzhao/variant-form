@@ -94,6 +94,7 @@ export default {
       resetForm: '重置表单',
       disableForm: '禁用编辑',
       enableForm: '恢复编辑',
+      previewFrom: '预览模式',
       exportFormData: '表单数据',
       copyFormData: '复制JSON',
       saveFormData: '保存为文件',

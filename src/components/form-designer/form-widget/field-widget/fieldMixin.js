@@ -2,6 +2,12 @@ import {deepClone} from "@/utils/util"
 import FormValidators from '@/utils/validators'
 
 export default {
+  props: {
+    previewState: { //是否表单预览状态
+      type: Boolean,
+      default: false
+    },
+  },
   inject: ['refList', 'formConfig', 'getGlobalDsv', 'globalOptionData', 'globalModel', 'getOptionData'],
 
   computed: {

@@ -2,16 +2,23 @@
   <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <el-date-picker ref="fieldEditor" :type="field.options.type" v-model="fieldModel" class="full-width-input"
-                    :disabled="field.options.disabled" :readonly="field.options.readonly"
-                    :size="field.options.size"
-                    :clearable="field.options.clearable" :editable="field.options.editable"
-                    :format="field.options.format" :value-format="field.options.valueFormat"
-                    :start-placeholder="field.options.startPlaceholder || i18nt('render.hint.startDatePlaceholder')"
-                    :end-placeholder="field.options.endPlaceholder || i18nt('render.hint.endDatePlaceholder')"
-                    @focus="handleFocusCustomEvent" @blur="handleBlurCustomEvent"
-                    @change="handleChangeEvent">
-    </el-date-picker>
+    <template v-if="previewState">
+      <template v-if="fieldModel != null">
+        {{ fieldModel[0] }} - {{ fieldModel[1] }}
+      </template>
+    </template>
+    <template v-else>
+      <el-date-picker ref="fieldEditor" :type="field.options.type" v-model="fieldModel" class="full-width-input"
+                      :disabled="field.options.disabled" :readonly="field.options.readonly"
+                      :size="field.options.size"
+                      :clearable="field.options.clearable" :editable="field.options.editable"
+                      :format="field.options.format" :value-format="field.options.valueFormat"
+                      :start-placeholder="field.options.startPlaceholder || i18nt('render.hint.startDatePlaceholder')"
+                      :end-placeholder="field.options.endPlaceholder || i18nt('render.hint.endDatePlaceholder')"
+                      @focus="handleFocusCustomEvent" @blur="handleBlurCustomEvent"
+                      @change="handleChangeEvent">
+      </el-date-picker>
+    </template>
   </form-item-wrapper>
 </template>
 

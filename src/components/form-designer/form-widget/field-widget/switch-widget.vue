@@ -2,13 +2,24 @@
   <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <el-switch ref="fieldEditor" v-model="fieldModel"
-               :disabled="field.options.disabled"
-               :active-text="field.options.activeText" :inactive-text="field.options.inactiveText"
-               :active-color="field.options.activeColor" :inactive-color="field.options.inactiveColor"
-               :width="field.options.switchWidth"
-               @change="handleChangeEvent">
-    </el-switch>
+    <template v-if="previewState">
+      <el-switch ref="fieldEditor" v-model="fieldModel"
+                :disabled="true"
+                :active-text="field.options.activeText" :inactive-text="field.options.inactiveText"
+                :active-color="field.options.activeColor" :inactive-color="field.options.inactiveColor"
+                :width="field.options.switchWidth"
+                @change="handleChangeEvent">
+      </el-switch>
+    </template>
+    <template v-else>
+      <el-switch ref="fieldEditor" v-model="fieldModel"
+                :disabled="field.options.disabled"
+                :active-text="field.options.activeText" :inactive-text="field.options.inactiveText"
+                :active-color="field.options.activeColor" :inactive-color="field.options.inactiveColor"
+                :width="field.options.switchWidth"
+                @change="handleChangeEvent">
+      </el-switch>
+    </template>
   </form-item-wrapper>
 </template>
 

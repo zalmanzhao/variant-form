@@ -2,11 +2,16 @@
   <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <vue-editor ref="fieldEditor" v-model="fieldModel" :editor-toolbar="customToolbar"
-                :disabled="field.options.disabled" :placeholder="field.options.placeholder"
-                @text-change="handleRichEditorChangeEvent"
-                @focus="handleRichEditorFocusEvent" @blur="handleRichEditorBlurEvent">
-    </vue-editor>
+    <template v-if="previewState">
+      <div v-html="fieldModel" />
+    </template>
+    <template v-else>
+      <vue-editor ref="fieldEditor" v-model="fieldModel" :editor-toolbar="customToolbar"
+                  :disabled="field.options.disabled" :placeholder="field.options.placeholder"
+                  @text-change="handleRichEditorChangeEvent"
+                  @focus="handleRichEditorFocusEvent" @blur="handleRichEditorBlurEvent">
+      </vue-editor>
+    </template>
   </form-item-wrapper>
 </template>
 

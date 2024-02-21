@@ -49,7 +49,7 @@
                :fullscreen="(layoutType === 'H5') || (layoutType === 'Pad')">
       <div>
         <div class="form-render-wrapper" :class="[layoutType === 'H5' ? 'h5-layout' : (layoutType === 'Pad' ? 'pad-layout' : '')]">
-          <VFormRender ref="preForm" :form-json="formJson" :form-data="testFormData" :preview-state="true"
+          <VFormRender ref="preForm" :form-json="formJson" :form-data="testFormData" :preview-state="previewState"
                        :option-data="testOptionData" :global-dsv="designerDsv"
                        @appendButtonClick="testOnAppendButtonClick" @buttonClick="testOnButtonClick"
                        @formChange="handleFormChange">
@@ -65,6 +65,7 @@
         <el-button type="primary" @click="resetForm">{{i18nt('designer.hint.resetForm')}}</el-button>
         <el-button type="primary" @click="setFormDisabled">{{i18nt('designer.hint.disableForm')}}</el-button>
         <el-button type="primary" @click="setFormEnabled">{{i18nt('designer.hint.enableForm')}}</el-button>
+        <el-button type="primary" @click="setFormPreview">{{i18nt('designer.hint.previewFrom')}}</el-button>
         <el-button type="" @click="showPreviewDialogFlag = false">{{i18nt('designer.hint.closePreview')}}</el-button>
         <el-button v-if="false" @click="printFormJson">PrintFormJson</el-button>
         <el-button v-if="false" @click="testValidate">TestValidate</el-button>
@@ -252,6 +253,8 @@
             {label: '丑橘子', value: 3},
           ],
         },
+
+        previewState: false
 
       }
     },
@@ -688,6 +691,10 @@
           }
         }
       },
+
+      setFormPreview() {
+        this.previewState = !this.previewState
+      }
 
     }
   }
