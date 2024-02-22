@@ -1,4 +1,10 @@
 export default {
+  props: {
+    previewState: { //是否表单预览状态
+      type: Boolean,
+      default: false
+    },
+  },
   inject: ['getGlobalDsv'],
   methods: {
     appendTableRow(widget) {

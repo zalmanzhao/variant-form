@@ -5,7 +5,7 @@
       <template v-for="(subWidget, swIdx) in widget.widgetList">
         <template v-if="'container' === subWidget.category">
           <component :is="getComponentByContainer(subWidget)" :widget="subWidget" :key="swIdx" :parent-list="widget.widgetList"
-                          :index-of-parent-list="swIdx" :parent-widget="widget">
+                          :index-of-parent-list="swIdx" :parent-widget="widget" :preview-state="previewState">
             <!-- 递归传递插槽！！！ -->
             <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
               <slot :name="slot" v-bind="scope"/>
@@ -14,7 +14,7 @@
         </template>
         <template v-else>
           <component :is="subWidget.type + '-widget'" :field="subWidget" :designer="null" :key="swIdx" :parent-list="widget.widgetList"
-                        :index-of-parent-list="swIdx" :parent-widget="widget">
+                        :index-of-parent-list="swIdx" :parent-widget="widget" :preview-state="previewState">
             <!-- 递归传递插槽！！！ -->
             <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
               <slot :name="slot" v-bind="scope"/>
@@ -54,9 +54,8 @@
         type: String,
         default: null
       },
-
     },
-    inject: ['refList', 'globalModel', 'formConfig', 'previewState'],
+    inject: ['refList', 'globalModel', 'formConfig'],
     data() {
       return {
         layoutProps: {

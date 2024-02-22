@@ -1,4 +1,10 @@
 export default {
+  props: {
+    previewState: { //是否表单预览状态
+      type: Boolean,
+      default: false
+    },
+  },
   methods: {
     initRefList() {
       if ((this.refList !== null) && !!this.widget.options.name) {

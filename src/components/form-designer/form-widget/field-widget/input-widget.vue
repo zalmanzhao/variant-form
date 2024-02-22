@@ -6,7 +6,6 @@
       {{ fieldModel }}
     </template>
     <template v-else>
-      {{ fieldModel }}
       <el-input ref="fieldEditor" v-model="fieldModel"
                 :disabled="field.options.disabled" :readonly="field.options.readonly"
                 :size="field.options.size" class="hide-spin-button"

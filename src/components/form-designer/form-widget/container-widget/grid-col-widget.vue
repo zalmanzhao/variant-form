@@ -13,6 +13,7 @@
                               :index-of-parent-list="swIdx" :parent-widget="widget"></component>
           </template>
           <template v-else>
+            {{  subWidget.type }}
             <component :is="subWidget.type + '-widget'" :field="subWidget" :designer="designer" :key="subWidget.id" :parent-list="widget.widgetList"
                           :index-of-parent-list="swIdx" :parent-widget="widget" :design-state="true"></component>
           </template>

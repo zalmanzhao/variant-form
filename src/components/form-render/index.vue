@@ -16,7 +16,7 @@
     <template v-for="(widget, index) in widgetList">
       <template v-if="'container' === widget.category">
         <component :is="getContainerWidgetName(widget)" :widget="widget" :key="widget.id" :parent-list="widgetList"
-                        :index-of-parent-list="index" :parent-widget="null">
+                        :index-of-parent-list="index" :parent-widget="null" :preview-state="previewState">
           <!-- 递归传递插槽！！！ -->
           <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
             <slot :name="slot" v-bind="scope"/>
