@@ -72,6 +72,8 @@ const COMMON_PROPERTIES = {
   'push'               :            'push-editor',
   'pull'               :            'pull-editor',
 
+  'height'             :            'height-editor',
+  'mode'               :            'mode-editor',
 }
 
 const ADVANCED_PROPERTIES = {

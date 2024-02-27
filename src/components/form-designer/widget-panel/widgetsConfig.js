@@ -914,7 +914,36 @@ export const advancedFields = [
 ]
 
 export const customFields = [
-
+  {
+    type: 'code-editor',
+    icon: 'code-editor-field',
+    formItemFlag: true,
+    options: {
+      name: '',
+      label: '',
+      labelAlign: '',
+      height: 200,
+      mode: 'mysql',
+      defaultValue: '',
+      columnWidth: '200px',
+      labelWidth: null,
+      labelHidden: false,
+      readonly: false,
+      hidden: false,
+      required: false,
+      requiredHint: '',
+      //-------------------
+      customClass: '',  //自定义css类名
+      labelIconClass: null,
+      labelIconPosition: 'rear',
+      labelTooltip: null,
+      //-------------------
+      onCreated: '',
+      onMounted: '',
+      onInput: '',
+      onChange: '',
+    },
+  },
 ]
 
 export function addContainerWidgetSchema(containerSchema) {

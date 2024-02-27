@@ -59,6 +59,8 @@ export default {
       slot:             'Slot',
 
       custom:           'Custom Component',
+
+      'code-editor':               'Code',
     },
 
     hint: {
@@ -94,6 +96,7 @@ export default {
       resetForm: 'Reset',
       disableForm: 'Disable',
       enableForm: 'Enable',
+      previewFrom: 'Read',
       exportFormData: 'Form Data',
       copyFormData: 'Copy',
       saveFormData: 'Save As File',
@@ -260,6 +263,8 @@ export default {
       precision: 'Precision',
       step: 'Step',
       controlsPosition: 'Controls Position',
+      mode: 'Language Mode',
+      height: 'Height',
       minLength: 'Min Length',
       maxLength: 'Max Length',
       showWordLimit: 'Show Word Limit',

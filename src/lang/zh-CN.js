@@ -59,6 +59,8 @@ export default {
       slot:             '插槽',
 
       custom:           'Custom Component',
+
+      'code-editor':               '代码',
     },
 
     hint: {
@@ -261,6 +263,8 @@ export default {
       precision: '精度',
       step: '增减步长',
       controlsPosition: '控制按钮位置',
+      height: '高度',
+      mode: '语言模式',
       minLength: '最小长度',
       maxLength: '最大长度',
       showWordLimit: '显示字数统计',
