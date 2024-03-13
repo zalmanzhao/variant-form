@@ -18,6 +18,8 @@ export default {
       uploadError: '上传错误: ',
       uploadExceed: '最大上传数量(${uploadLimit})已超出.',
       unsupportedFileType: '不支持格式: ',
+      unsupportedBrowser: '当前浏览器不支持',
+      noImage: '粘贴内容非图片',
       fileSizeExceed: '文件大小已超出: ',
       refNotFound: '组件未找到: ',
       fieldRequired: '字段值不可为空',

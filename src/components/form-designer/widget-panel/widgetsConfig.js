@@ -845,12 +845,17 @@ export const advancedFields = [
       labelWidth: null,
       labelHidden: false,
       columnWidth: '200px',
+      height: 200,
       disabled: false,
       hidden: false,
       required: false,
       requiredHint: '',
       customRule: '',
       customRuleHint: '',
+      uploadURL: '',
+      withCredentials: false,
+      limit: 3,
+      fileMaxSize: 10, //MB
       //-------------------
       customClass: '',  //自定义css类名
       labelIconClass: null,

@@ -15,7 +15,7 @@
     </template>
     <template v-else>
       <!-- el-upload增加:name="field.options.name"后，会导致又拍云上传失败！故删除之！！ -->
-      <el-upload ref="fieldEditor" :disabled="field.options.disabled"
+      <el-upload @paste="handlePaste" ref="fieldEditor" :disabled="field.options.disabled"
                 :action="realUploadURL" :headers="uploadHeaders" :data="uploadData"
                 :with-credentials="field.options.withCredentials"
                 :multiple="field.options.multipleSelect" :file-list="fileList" :show-file-list="field.options.showFileList"
@@ -27,6 +27,9 @@
             v-if="!!field.options.uploadTip">{{field.options.uploadTip}}</div>
         <i class="el-icon-plus avatar-uploader-icon"></i>
       </el-upload>
+      <div id="preview" @paste="handlePaste">
+          <span><i class="el-icon-s-opportunity" style="color:#FB894C"></i>{{i18nt('designer.hint.ctrlVImage')}}</span>
+      </div>
     </template>
 
     <el-dialog title="" v-if="showPreviewDialogFlag" :visible.sync="showPreviewDialogFlag"
@@ -137,6 +140,33 @@
     },
 
     methods: {
+      handlePaste(event) {
+          const items = (event.clipboardData || window.clipboardData).items;
+          let file = null;
+          if (!items || items.length === 0) {
+              this.$message.warning(this.i18nt('render.hint.unsupportedBrowser'));
+              return;
+          }
+          // 搜索剪切板items
+          for (let i = 0; i < items.length; i++) {
+              if (items[i].type.indexOf("image") !== -1) {
+                  file = items[i].getAsFile();
+                  break;
+              }
+          }
+          if (!file) {
+              this.$message.warning(this.i18nt('render.hint.noImage'));
+              return;
+          }
+          if (this.fileList.length >= this.field.options.limit) {
+              let uploadLimit = this.field.options.limit
+              this.$message.warning(this.i18nt('render.hint.uploadExceed').replace('${uploadLimit}', uploadLimit)); // 图片数量超出
+              return
+          }
+          this.$refs.fieldEditor.handleStart(file); // 将粘贴过来的图片加入预上传队列
+          this.$refs.fieldEditor.submit(); // 提交图片上传队列
+      },
+
       handlePictureExceed() {
         let uploadLimit = this.field.options.limit
         this.$message.warning( this.i18nt('render.hint.uploadExceed').replace('${uploadLimit}', uploadLimit) )

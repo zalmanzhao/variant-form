@@ -6,21 +6,32 @@
       <div v-html="fieldModel" />
     </template>
     <template v-else>
-      <vue-editor ref="fieldEditor" v-model="fieldModel" :editor-toolbar="customToolbar"
-                  :disabled="field.options.disabled" :placeholder="field.options.placeholder"
-                  @text-change="handleRichEditorChangeEvent"
-                  @focus="handleRichEditorFocusEvent" @blur="handleRichEditorBlurEvent">
-      </vue-editor>
+      <div style="border: 1px solid #ccc; margin-top: 10px;">
+        <!-- 工具栏 -->
+        <Toolbar
+            style="border-bottom: 1px solid #ccc"
+            :editor="editor"
+            :defaultConfig="toolbarConfig"
+            :mode="editorConfig.mode"
+        />
+        <Editor ref="fieldEditor" :style="{'height': field.options.height + 'px', 'overflow-y': 'hidden'}" v-model="fieldModel"
+                    :defaultConfig="editorConfig" @onCreated="onCreated"
+                    @onChange="handleRichEditorChangeEvent" :mode="editorConfig.mode">
+        </Editor>
+      </div>
     </template>
   </form-item-wrapper>
 </template>
 
 <script>
   import FormItemWrapper from './form-item-wrapper'
-  import {VueEditor} from 'vue2-editor'
+  import { Editor, Toolbar } from '@wangeditor/editor-for-vue'
+  import '@wangeditor/editor/dist/css/style.css'
+  import { Boot } from '@wangeditor/editor'
+  import markdownModule from '@wangeditor/plugin-md'
+  Boot.registerModule(markdownModule)
   import emitter from '@/utils/emitter'
-  import i18n, {translate} from "@/utils/i18n"
-  import {deepClone} from "@/utils/util"
+  import i18n from "@/utils/i18n"
   import fieldMixin from "@/components/form-designer/form-widget/field-widget/fieldMixin"
 
   export default {
@@ -55,24 +66,32 @@
     },
     components: {
       FormItemWrapper,
-      VueEditor
-      // VueEditor: resolve => { //懒加载！！
-      //   require(['vue2-editor'], ({VueEditor}) => resolve(VueEditor))
-      // }
+      Editor,
+      Toolbar
     },
     inject: ['refList', 'formConfig', 'globalOptionData', 'globalModel'],
     data() {
       return {
+        editor: null,
         oldFieldValue: null, //field组件change之前的值
         fieldModel: null,
         rules: [],
-
-        customToolbar: [], //富文本编辑器自定义工具栏
+        toolbarConfig: { },
+        editorConfig: { mode: 'simple', MENU_CONF: {} },
         valueChangedFlag: false, //vue2-editor数据值是否改变标志
       }
     },
     computed: {
+      realUploadURL() {
+        let uploadURL = this.field.options.uploadURL
+        if (!!uploadURL && ((uploadURL.indexOf('DSV.') > -1) || (uploadURL.indexOf('DSV[') > -1))) {
+          let DSV = this.getGlobalDsv()
+          console.log('test DSV: ', DSV)  //防止DSV被打包工具优化！！！
+          return evalFn(this.field.options.uploadURL, DSV)
+        }
 
+        return this.field.options.uploadURL
+      },
     },
     beforeCreate() {
       /* 这里不能访问方法和属性！！ */
@@ -87,6 +106,19 @@
       this.buildFieldRules()
 
       this.handleOnCreated()
+
+      this.editorConfig.MENU_CONF['uploadImage'] =  {
+        fieldName: 'file',
+        server: this.realUploadURL,
+        maxFileSize: this.field.options.fileMaxSize * 1024 * 1024, // 
+        // 最多可上传几个文件，默认为 100
+        maxNumberOfFiles: this.field.options.limit,
+
+        base64LimitSize: 100 * 1024, // insert base64 format, if file's size less than 100kb
+        // 跨域是否传递 cookie ，默认为 false
+        withCredentials: this.field.options.withCredentials,
+        timeout: 10 * 1000, // 10 秒
+      }
     },
 
     mounted() {
@@ -95,25 +127,20 @@
 
     beforeDestroy() {
       this.unregisterFromRefList()
+      const editor = this.editor
+      if (editor == null) return
+      editor.destroy() // 组件销毁时，及时销毁 editor ，重要！！！
     },
 
     methods: {
-      handleRichEditorChangeEvent() {
+      onCreated(editor) {
+        this.editor = Object.seal(editor); // 【注意】一定要用 Object.seal() 否则会报错
+      },
+
+      handleRichEditorChangeEvent(editor) {
         this.valueChangedFlag = true
-        this.syncUpdateFormModel(this.fieldModel)
+        this.syncUpdateFormModel(editor.getHtml())
       },
-
-      handleRichEditorFocusEvent() {
-        this.oldFieldValue = deepClone(this.fieldModel)
-      },
-
-      handleRichEditorBlurEvent() {
-        if (this.valueChangedFlag) {
-          this.emitFieldDataChange(this.fieldModel, this.oldFieldValue)
-          this.valueChangedFlag = false
-        }
-      },
-
     }
   }
 </script>

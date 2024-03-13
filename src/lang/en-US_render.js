@@ -18,6 +18,8 @@ export default {
       uploadError: 'Upload error: ',
       uploadExceed: 'The maximum number(${uploadLimit}) of file uploads has been exceeded.',
       unsupportedFileType: 'Unsupported format: ',
+      unsupportedBrowser: 'The current browser does not support',
+      noImage: 'Paste content other than images',
       fileSizeExceed: 'File size out of limit: ',
       refNotFound: 'Ref not found: ',
       fieldRequired: 'Input value should be not null.',

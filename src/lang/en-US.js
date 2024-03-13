@@ -145,6 +145,8 @@ export default {
       colspanNotConsistentForDeleteEntireColumn: 'Cells in this column don\'t have the same colspan, operation failed.',
       lastColCannotBeDeleted: 'The last col cannot be deleted.',
       lastRowCannotBeDeleted: 'The last row cannot be deleted.',
+
+      ctrlVImage: 'Click here to paste the image by pressing Ctrl+V here',
     },
 
     toolbar: {
