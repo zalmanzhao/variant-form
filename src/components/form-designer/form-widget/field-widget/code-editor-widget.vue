@@ -58,7 +58,7 @@
       FormItemWrapper,
       CodeEditor
     },
-    inject: ['refList', 'formConfig', 'globalOptionData', 'globalModel'],
+    inject: ['refList', 'globalOptionData', 'globalModel'],
     data() {
       return {
         oldFieldValue: null, //field组件change之前的值

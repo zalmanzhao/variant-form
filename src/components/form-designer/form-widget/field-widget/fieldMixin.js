@@ -8,16 +8,26 @@ export default {
       default: false
     },
   },
-  inject: ['refList', 'formConfig', 'getGlobalDsv', 'globalOptionData', 'globalModel', 'getOptionData'],
+  data() {
+    return {
+      fieldReadonlyFlag: false
+    }
+  },
+  inject: ['refList', 'getFormConfig', 'globalOptionData', 'globalModel', 'getOptionData', 'getGlobalDsv', 'getReadMode', 'getSubFormFieldFlag', 'getSubFormName'],
 
   computed: {
+    formConfig() {
+      return this.getFormConfig()
+    },
+
     subFormName() {
-      return !!this.parentWidget ? this.parentWidget.options.name : ''
+      return !!this.getSubFormName ? this.getSubFormName() : ''
     },
 
     subFormItemFlag() {
-      return !!this.parentWidget ? this.parentWidget.type === 'sub-form' : false
+      return !!this.getSubFormFieldFlag ? this.getSubFormFieldFlag() : false
     },
+
 
     formModel: {
       cache: false,
@@ -26,9 +36,47 @@ export default {
       }
     },
 
+    isReadMode() {
+      return !!this.getReadMode() ? true : this.fieldReadonlyFlag
+    },
+
+    optionLabel() {
+      if (this.fieldModel === null) {
+        return '--'
+      } else {
+        let resultContent = '--'
+        this.field.options.optionItems.forEach(oItem => {
+          if ((oItem.value === this.fieldModel) || (this.findInArray(this.fieldModel, oItem.value)) !== -1) {
+            resultContent = resultContent === '--' ? oItem.label : resultContent + ' ' + oItem.label
+          }
+        })
+
+        return resultContent
+      }
+    },
+
+    fieldKeyName() {
+      let e = this.field.options.name;
+      return this.field.options.keyNameEnabled && this.field.options.keyName || e
+    }
+
   },
 
   methods: {
+    findInArray(arrayObject, element) {
+      if (!Array.isArray(arrayObject)) {
+        return -1
+      }
+
+      let foundIdx = -1
+      arrayObject.forEach((aItem, aIdx) => {
+        if (aItem === element) {
+          foundIdx = aIdx
+        }
+      })
+
+      return foundIdx
+    },
 
     //--------------------- 组件内部方法 begin ------------------//
     getPropName() {
@@ -313,10 +361,11 @@ export default {
       if (!!this.subFormItemFlag) {
         let subFormData = this.formModel[this.subFormName] || [{}]
         let subFormDataRow = subFormData[this.subFormRowIndex]
-        subFormDataRow[this.field.options.name] = value
+        subFormDataRow[this.fieldKeyName] = value
       } else {
-        this.formModel[this.field.options.name] = value
+        this.formModel[this.fieldKeyName] = value
       }
+      console.log(this.formModel)
     },
 
     handleChangeEvent(value) {  /* input的清除输入小按钮会同时触发handleChangeEvent、handleInputCustomEvent！！ */

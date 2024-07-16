@@ -1,4 +1,4 @@
-import { traverseFieldWidgetsOfContainer } from "@/utils/util";
+import { traverseFieldWidgetsOfContainer,traverseWidgetsOfContainer } from "@/utils/util";
 
 export default {
   inject: ['getGlobalDsv'],
@@ -105,24 +105,50 @@ export default {
       return !this.rowIdData ? 0 : this.rowIdData.length
     },
 
-    disableSubFormRow(rowIndex) {
-      this.widget.widgetList.forEach(subWidget => {
-        let swRefName = subWidget.options.name + '@row' + this.rowIdData[rowIndex]
-        let foundSW = this.getWidgetRef(swRefName)
-        if (!!foundSW) {
-          foundSW.setDisabled(true)
+    setGridSubFormRowDisabled(rowId, disabledFlag) {
+      const fwHandler = (fw) => {
+        const fwName = fw.options.name + '@row' + rowId
+        const fwRef = this.getWidgetRef(fwName)
+        if (!!fwRef && !!fwRef.setDisabled) {
+          fwRef.setDisabled(disabledFlag)
         }
-      })
+      }
+      const cwHandler = (cw) => {
+        const cwName = cw.options.name + '@row' + rowId
+        const cwRef = this.getWidgetRef(cwName)
+        if (!!cwRef && !!cwRef.setDisabled) {
+          cwRef.setDisabled(disabledFlag)
+        }
+      }
+      traverseWidgetsOfContainer(this.widget, fwHandler, cwHandler)
+    },
+
+    disableSubFormRow(rowIndex) {
+      if (this.widget.type === 'sub-form') {
+        this.widget.widgetList.forEach(subWidget => {
+          let swRefName = subWidget.options.name + '@row' + this.rowIdData[rowIndex]
+          let foundSW = this.getWidgetRef(swRefName)
+          if (!!foundSW) {
+            foundSW.setDisabled(true)
+          }
+        })
+      } else if (this.widget.type === 'grid-sub-form') {
+        this.setGridSubFormRowDisabled(this.rowIdData[rowIndex], true)
+      }
     },
 
     enableSubFormRow(rowIndex) {
-      this.widget.widgetList.forEach(subWidget => {
-        let swRefName = subWidget.options.name + '@row' + this.rowIdData[rowIndex]
-        let foundSW = this.getWidgetRef(swRefName)
-        if (!!foundSW) {
-          foundSW.setDisabled(false)
-        }
-      })
+      if (this.widget.type === 'sub-form') {
+        this.widget.widgetList.forEach(subWidget => {
+          let swRefName = subWidget.options.name + '@row' + this.rowIdData[rowIndex]
+          let foundSW = this.getWidgetRef(swRefName)
+          if (!!foundSW) {
+            foundSW.setDisabled(false)
+          }
+        })
+      } else if (this.widget.type === 'grid-sub-form') {
+        this.setGridSubFormRowDisabled(this.rowIdData[rowIndex], false)
+      }
     },
 
     disableSubForm() {
@@ -147,8 +173,9 @@ export default {
       this.actionDisabled = false
     },
 
+
     resetSubForm() { //重置subForm数据为空
-      if (this.widget.type === 'sub-form') {
+      if ("sub-form" === this.widget.type || "grid-sub-form" === this.widget.type) {
         let subFormModel = this.formModel[this.widget.options.name]
         if (!!subFormModel) {
           subFormModel.splice(0, subFormModel.length)
@@ -162,7 +189,7 @@ export default {
     },
 
     getSubFormValues(needValidation = true) {
-      if (this.widget.type === 'sub-form') {
+      if ("sub-form" === this.widget.type || "grid-sub-form" === this.widget.type) {
         //TODO: 逐行校验子表单！暂未实现！！
         return this.formModel[this.widget.options.name]
       } else {
@@ -172,6 +199,69 @@ export default {
 
     setSubFormValues(subFormValues) {
       //TODO: 待实现！！
+    },
+
+
+    disableGridSubFormRow(rowIndex) {
+      let gsfFWList = []
+      let fieldListFn = (fw) => {
+        gsfFWList.push(fw)
+      }
+      traverseFieldWidgetsOfContainer(this.widget, fieldListFn)
+
+      gsfFWList.forEach(fw => {
+        let swRefName = fw.options.name + '@row' + this.rowIdData[rowIndex]
+        let foundSW = this.getWidgetRef(swRefName)
+        if (!!foundSW && !!foundSW.setDisabled) {
+          foundSW.setDisabled(true)
+        }
+      })
+    },
+
+    enableGridSubFormRow(rowIndex) {
+      let gsfFWList = []
+      let fieldListFn = (fw) => {
+        gsfFWList.push(fw)
+      }
+      traverseFieldWidgetsOfContainer(this.widget, fieldListFn)
+
+      gsfFWList.forEach(fw => {
+        let swRefName = fw.options.name + '@row' + this.rowIdData[rowIndex]
+        let foundSW = this.getWidgetRef(swRefName)
+        if (!!foundSW && !!foundSW.setDisabled) {
+          foundSW.setDisabled(false)
+        }
+      })
+    },
+
+    disableGridSubForm() {
+      traverseFieldWidgetsOfContainer(this.widget, (fw) => {
+        fw.options.disabled = true
+      })
+
+      if (this.rowIdData.length > 0) {
+        this.rowIdData.forEach((dataRow, rIdx) => {
+          this.disableGridSubFormRow(rIdx)
+        })
+      }
+
+      //禁用3个操作按钮
+      this.actionDisabled = true
+    },
+
+    enableGridSubForm() {
+      traverseFieldWidgetsOfContainer(this.widget, (fw) => {
+        fw.options.disabled = false
+      })
+
+      if (this.rowIdData.length > 0) {
+        this.rowIdData.forEach((dataRow, rIdx) => {
+          this.enableGridSubFormRow(rIdx)
+        })
+      }
+
+      //启用3个操作按钮
+      this.actionDisabled = false
     },
 
     // validateField(fieldName) { //逐行校验子表单字段

@@ -40,6 +40,47 @@ export const containers = [
   },
 
   {
+    type: 'sub-form',
+    category: 'container',
+    icon: 'sub-form',
+    widgetList: [],
+    options: {
+      name: '',
+      columnWidth: '80px',
+      showBlankRow: true,
+      showRowNumber: true,
+      labelAlign: 'label-center-align',
+      hidden: false,
+      actionColumnPosition: 'left',  //操作按钮列位置
+      customClass: '',  //自定义css类名
+      onSubFormRowAdd: '',
+      onSubFormRowInsert: '',
+      onSubFormRowDelete: '',
+      onSubFormRowChange: '',
+    }
+  },
+
+  {
+    type: 'grid-sub-form',
+    category: 'container',
+    icon: 'grid-sub-form',
+    widgetList: [],
+    options: {
+      name: '',
+      columnWidth: '80px',
+      showBlankRow: true,
+      showRowNumber: true,
+      hidden: false,
+      actionColumnPosition: 'left',  //操作按钮列位置
+      customClass: '',  //自定义css类名
+      onSubFormRowAdd: '',
+      onSubFormRowInsert: '',
+      onSubFormRowDelete: '',
+      onSubFormRowChange: '',
+    }
+  },
+
+  {
     type: 'grid-col',
     category: 'container',
     icon: 'grid-col',

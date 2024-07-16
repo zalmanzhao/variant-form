@@ -137,6 +137,10 @@ export function createDesigner(vueInstance) {
             //this.$message.info(this.vueInstance.i18nt('designer.hint.onlyFieldWidgetAcceptable'))
             return false
           }
+          /* 多行子表单只允许拖入栅格组件！！ */
+          if ((evt.to.className === 'grid-sub-form') && (wgType !== 'grid')) {
+            return false
+          }
         }
       }
 
@@ -149,8 +153,12 @@ export function createDesigner(vueInstance) {
         let wgType = evt.draggedContext.element.type + ''
         //console.log('wgType======', wgType)
         if (!!evt.to) {
-          if ((evt.to.className === 'sub-form-table') && (wgType === 'slot')) {
+          if ((evt.to.className === 'sub-form-table' || evt.to.className === 'grid-sub-form') && (wgType === 'slot')) {
             //this.$message.info(this.vueInstance.i18nt('designer.hint.onlyFieldWidgetAcceptable'))
+            return false
+          }
+          /* 行子表单只允许拖入栅格组件！！ */
+          if ((evt.to.className === 'grid-sub-form') && (wgType !== 'grid')) {
             return false
           }
         }

@@ -23,6 +23,8 @@
          @click.stop="appendTableRow(widget)"></i>
       <i v-if="widget.type === 'table'" class="iconfont icon-insertcolumn" :title="i18nt('designer.hint.insertColumn')"
          @click.stop="appendTableCol(widget)"></i>
+      <i v-if="(widget.type === 'grid') || (widget.type === 'table')" :title="i18nt('designer.hint.cloneWidget')"
+         @click.stop="cloneContainer(widget)"><svg-icon icon-class="el-clone" /></i>
       <i class="el-icon-copy-document" v-if="(widget.type === 'grid') || (widget.type === 'table')"
          :title="i18nt('designer.hint.cloneWidget')" @click.stop="cloneContainer(widget)"></i>
       <i class="el-icon-delete" :title="i18nt('designer.hint.remove')" @click.stop="removeWidget"></i>
@@ -39,10 +41,14 @@
 <script>
   import i18n from "@/utils/i18n";
   import containerMixin from "@/components/form-designer/form-widget/container-widget/containerMixin";
+  import SvgIcon from '@/components/svg-icon'
 
   export default {
     name: "container-wrapper",
     mixins: [i18n, containerMixin],
+    components: {
+      SvgIcon,
+    },
     props: {
       widget: Object,
       parentWidget: Object,

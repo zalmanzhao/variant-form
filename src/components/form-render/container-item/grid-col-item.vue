@@ -5,18 +5,20 @@
       <template v-for="(subWidget, swIdx) in widget.widgetList">
         <template v-if="'container' === subWidget.category">
           <component :is="getComponentByContainer(subWidget)" :widget="subWidget" :key="swIdx" :parent-list="widget.widgetList"
-                          :index-of-parent-list="swIdx" :parent-widget="widget" :preview-state="previewState">
+                     :index-of-parent-list="swIdx" :parent-widget="widget"
+                     :sub-form-row-id="subFormRowId" :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :preview-state="previewState">
             <!-- 递归传递插槽！！！ -->
-            <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
+            <template v-for="slot in Object.keys($slots)" v-slot:[slot]="scope">
               <slot :name="slot" v-bind="scope"/>
             </template>
           </component>
         </template>
         <template v-else>
           <component :is="subWidget.type + '-widget'" :field="subWidget" :designer="null" :key="swIdx" :parent-list="widget.widgetList"
-                        :index-of-parent-list="swIdx" :parent-widget="widget" :preview-state="previewState">
+                     :index-of-parent-list="swIdx" :parent-widget="widget"
+                     :sub-form-row-id="subFormRowId" :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :preview-state="previewState">
             <!-- 递归传递插槽！！！ -->
-            <template v-for="slot in Object.keys($scopedSlots)" v-slot:[slot]="scope">
+            <template v-for="slot in Object.keys($slots)" v-slot:[slot]="scope">
               <slot :name="slot" v-bind="scope"/>
             </template>
           </component>
@@ -54,8 +56,22 @@
         type: String,
         default: null
       },
+
+      subFormRowIndex: { /* 子表单组件行索引，从0开始计数 */
+        type: Number,
+        default: -1
+      },
+      subFormColIndex: { /* 子表单组件列索引，从0开始计数 */
+        type: Number,
+        default: -1
+      },
+      subFormRowId: { /* 子表单组件行Id，唯一id且不可变 */
+        type: String,
+        default: ''
+      },
+
     },
-    inject: ['refList', 'globalModel', 'formConfig'],
+    inject: ['refList', 'globalModel', 'getFormConfig'],
     data() {
       return {
         layoutProps: {
@@ -70,6 +86,10 @@
       }
     },
     computed: {
+      formConfig() {
+        return this.getFormConfig()
+      },
+
       customClass() {
         return this.widget.options.customClass || ''
       },

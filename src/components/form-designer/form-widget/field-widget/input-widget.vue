@@ -3,7 +3,7 @@
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
     <template v-if="previewState">
-      {{ fieldModel }}
+      {{ contentForReadMode }}
     </template>
     <template v-else>
       <el-input ref="fieldEditor" v-model="fieldModel"
@@ -35,7 +35,6 @@
     name: "input-widget",
     componentName: 'FieldWidget',  //必须固定为FieldWidget，用于接收父级组件的broadcast事件
     mixins: [emitter, fieldMixin, i18n],
-    inject: ['previewState'],
     props: {
       field: Object,
       parentWidget: Object,
@@ -65,7 +64,7 @@
     components: {
       FormItemWrapper,
     },
-    inject: ['refList', 'formConfig', 'globalOptionData', 'globalModel'],
+    inject: ['refList', 'globalOptionData', 'globalModel'],
     data() {
       return {
         oldFieldValue: null, //field组件change之前的值
@@ -81,7 +80,9 @@
 
         return this.field.options.type
       },
-
+      contentForReadMode() {
+          return this.fieldModel ? this.fieldModel : "--"
+      }
     },
     beforeCreate() {
       /* 这里不能访问方法和属性！！ */

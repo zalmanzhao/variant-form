@@ -57,13 +57,16 @@
     provide() {
       return {
         refList: this.widgetRefList,
-        formConfig: this.formConfig,
+        getFormConfig: () => this.formConfig,  /* 解决provide传递formConfig属性的响应式更新问题！！ */
         getGlobalDsv: () => this.globalDsv, // 全局数据源变量
         globalOptionData: this.optionData,
         getOptionData: () => this.optionData,
+        getReadMode: () => false,
         globalModel: {
           formModel: this.formModel,
-        }
+        },
+        getSubFormFieldFlag: () => false,
+        getSubFormName: () => '',
       }
     },
     inject: ['getDesignerConfig'],

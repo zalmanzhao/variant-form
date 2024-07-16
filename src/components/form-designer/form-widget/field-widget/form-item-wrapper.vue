@@ -88,8 +88,12 @@
 
       rules: Array,
     },
-    inject: ['formConfig'],
+    inject: ['getFormConfig', 'getSubFormFieldFlag', 'getSubFormName'],
     computed: {
+      formConfig() {
+        return this.getFormConfig()
+      },
+
       selected() {
         return !!this.designer && this.field.id === this.designer.selectedId
       },
@@ -135,11 +139,11 @@
       },
 
       subFormName() {
-        return !!this.parentWidget ? this.parentWidget.options.name : ''
+        return !!this.getSubFormName ? this.getSubFormName() : ''
       },
 
       subFormItemFlag() {
-        return !!this.parentWidget ? this.parentWidget.type === 'sub-form' : false
+        return !!this.getSubFormFieldFlag ? this.getSubFormFieldFlag() : false
       },
 
     },

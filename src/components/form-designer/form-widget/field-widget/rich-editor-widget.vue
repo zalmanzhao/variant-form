@@ -69,7 +69,7 @@
       Editor,
       Toolbar
     },
-    inject: ['refList', 'formConfig', 'globalOptionData', 'globalModel'],
+    inject: ['refList', 'globalOptionData', 'globalModel'],
     data() {
       return {
         editor: null,

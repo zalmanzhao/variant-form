@@ -132,6 +132,44 @@ export const loadRemoteScript = function(srcPath, callback) {  /*加载远程js�
   }
 }
 
+/**
+ * 遍历容器内部的字段组件和容器组件
+ * @param con
+ * @param fieldHandler
+ * @param containerHandler
+ */
+export function traverseWidgetsOfContainer(con, fieldHandler, containerHandler) {
+  if (con.type === 'grid') {
+    con.cols.forEach(col => {
+      col.widgetList.forEach(cw => {
+        handleContainerTraverse(cw, fieldHandler, containerHandler)
+      })
+    })
+  } else if (con.type === 'table') {
+    con.rows.forEach(row => {
+      row.cols.forEach(cell => {
+        cell.widgetList.forEach(cw => {
+          handleContainerTraverse(cw, fieldHandler, containerHandler)
+        })
+      })
+    })
+  } else if (con.type === 'tab') {
+    con.tabs.forEach(tab => {
+      tab.widgetList.forEach(cw => {
+        handleContainerTraverse(cw, fieldHandler, containerHandler)
+      })
+    })
+  } else if (con.type === 'sub-form' || con.type === 'grid-sub-form') {
+    con.widgetList.forEach(cw => {
+      handleContainerTraverse(cw, fieldHandler, containerHandler)
+    })
+  } else if (con.category === 'container') {  //自定义容器
+    con.widgetList.forEach(cw => {
+      handleContainerTraverse(cw, fieldHandler, containerHandler)
+    })
+  }
+}
+
 export function traverseFieldWidgets(widgetList, handler, parent = null) {
   if (!widgetList) {
     return
@@ -154,7 +192,7 @@ export function traverseFieldWidgets(widgetList, handler, parent = null) {
       w.tabs.forEach(tab => {
         traverseFieldWidgets(tab.widgetList, handler, w)
       })
-    } else if (w.type === 'sub-form') {
+    } else if (w.type === 'sub-form' || w.type === 'grid-sub-form') {
       traverseFieldWidgets(w.widgetList, handler, w)
     } else if (w.category === 'container') {  //自定义容器
       traverseFieldWidgets(w.widgetList, handler, w)
@@ -186,7 +224,7 @@ export function traverseContainerWidgets(widgetList, handler) {
       w.tabs.forEach(tab => {
         traverseContainerWidgets(tab.widgetList, handler)
       })
-    } else if (w.type === 'sub-form') {
+    } else if (w.type === 'sub-form' || w.type === 'grid-sub-form') {
       traverseContainerWidgets(w.widgetList, handler)
     } else if (w.category === 'container') {  //自定义容器
       traverseContainerWidgets(w.widgetList, handler)
@@ -218,7 +256,7 @@ export function traverseAllWidgets(widgetList, handler) {
       w.tabs.forEach(tab => {
         traverseAllWidgets(tab.widgetList, handler)
       })
-    } else if (w.type === 'sub-form') {
+    } else if (w.type === 'sub-form' || w.type === 'grid-sub-form') {
       traverseAllWidgets(w.widgetList, handler)
     } else if (w.category === 'container') {  //自定义容器
       traverseAllWidgets(w.widgetList, handler)
@@ -260,7 +298,7 @@ export function traverseFieldWidgetsOfContainer(con, handler) {
         handleWidgetForTraverse(cw, handler)
       })
     })
-  } else if (con.type === 'sub-form') {
+  } else if (con.type === 'sub-form' || con.type === 'grid-sub-form') {
     con.widgetList.forEach(cw => {
       handleWidgetForTraverse(cw, handler)
     })

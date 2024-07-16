@@ -45,7 +45,8 @@
     generateId, deepClone, getAllContainerWidgets, getAllFieldWidgets,
     insertCustomCssToHead,
     insertGlobalFunctionsToHtml,
-    traverseFieldWidgets, buildDefaultFormJson
+    traverseFieldWidgets, buildDefaultFormJson,
+    traverseFieldWidgetsOfContainer
   } from "@/utils/util"
   import i18n, { changeLocale } from "../../utils/i18n"
 
@@ -75,9 +76,25 @@
         type: Boolean,
         default: false
       },
-      globalDsv: {
+      disabledMode: { //表单禁止编辑模式
+        type: Boolean,
+        default: false,
+      },
+      renderConfig: { //渲染配置对象
+        type: Object,
+        default: () => {
+          return {
+            languageName: 'zh-CN',  //界面语言，默认显示中文
+          }
+        }
+      },
+      globalDsv: { // 全局数据源变量
         type: Object,
         default: () => ({})
+      },
+      parentForm: {
+        type: Object,
+        default: null
       },
     },
     provide() {
@@ -85,12 +102,17 @@
         refList: this.widgetRefList,
         sfRefList: this.subFormRefList,  //收集SubForm引用
         formConfig: this.formConfig,
+        getFormConfig: () => this.formJsonObj.formConfig,  /* 解决provide传递formConfig属性的响应式更新问题！！ */
         getGlobalDsv: () => this.globalDsv, // 全局数据源变量
         globalOptionData: this.optionData,
         getOptionData: () => this.optionData,  /* 该方法用于在异步更新option-data之后重新获取到最新值 */
         globalModel: {
           formModel: this.formDataModel,
         },
+        getReadMode: () => this.readModeFlag,
+        getSubFormFieldFlag: () => false,
+        getSubFormName: () => '',
+        getDSResultCache: () => this.dsResultCache,
       }
     },
     data() {
@@ -106,6 +128,11 @@
         formId: null,  //表单唯一Id，用于区分页面上的多个v-form-render组件！！
 
         externalComponents:  {},  //外部组件实例集合
+        readModeFlag: false,  //是否只读查看模式
+        dialogOrDrawerRef: null, //保存子级VFormRender的包裹弹窗组件或抽屉组件的ref
+        childFormRef: null, //保存子级VFormRender组件的ref
+
+        dsResultCache: {},  //数据源请求结果缓存
       }
     },
     computed: {
@@ -253,6 +280,28 @@
               let initialValue = this.formData[subFormName]
               this.$set(this.formDataModel, subFormName, deepClone(initialValue))
             }
+          } else if (wItem.type === 'grid-sub-form')  {
+            let gridSubFormName = wItem.options.name
+            if (!this.formData.hasOwnProperty(gridSubFormName)) {
+              let gsfFWList = []
+              let fieldListFn = (fw) => {
+                gsfFWList.push(fw)
+              }
+              traverseFieldWidgetsOfContainer(wItem, fieldListFn)
+
+              let gridSubFormDataRow = {}
+              if (wItem.options.showBlankRow) {
+                gsfFWList.forEach(gridSubFormItem => {
+                  gridSubFormDataRow[gridSubFormItem.options.name] = gridSubFormItem.options.defaultValue
+                })
+                this.$set(this.formDataModel, gridSubFormName, [gridSubFormDataRow])
+              } else {
+                this.$set(this.formDataModel, gridSubFormName, [])
+              }
+            } else {
+              let initialValue = this.formData[gridSubFormName]
+              this.$set(this.formDataModel, gridSubFormName, deepClone(initialValue))
+            }
           } else if ((wItem.type === 'grid-col') || (wItem.type === 'table-cell')) {
             if (!!wItem.widgetList && (wItem.widgetList.length > 0)) {
               wItem.widgetList.forEach((childItem) => {
@@ -288,6 +337,7 @@
       addFieldValidateEventHandler() {
         this.$off('fieldValidation')  //移除原有事件监听
         this.$on('fieldValidation', (fieldName) => {
+          console.log(fieldName)
           this.$refs.renderForm.validateField(fieldName)
         })
       },
@@ -474,6 +524,7 @@
         });
 
         this.$refs['renderForm'].validate((valid) => {
+          console.log(valid)
           if (valid) {
             callback(this.formDataModel)
           } else {
@@ -538,7 +589,7 @@
       },
 
       setSubFormValues(subFormName, subFormValues) {
-        //TODO: 待实现！！
+        // return this.subFormRefList[subFormName].setSubFormValues(subFormValues)
       },
 
       disableForm() {
@@ -548,6 +599,8 @@
           if (!!foundW) {
             if (!!foundW.widget && (foundW.widget.type === 'sub-form')) {
               foundW.disableSubForm()
+            } else if (!!foundW.widget && (foundW.widget.type === 'grid-sub-form')) {
+              foundW.disableGridSubForm()
             } else {
               !!foundW.setDisabled && foundW.setDisabled(true)
             }
@@ -562,6 +615,8 @@
           if (!!foundW) {
             if (!!foundW.widget && (foundW.widget.type === 'sub-form')) {
               foundW.enableSubForm()
+            } else if (!!foundW.widget && (foundW.widget.type === 'grid-sub-form')) {
+              foundW.enableGridSubForm()
             } else {
               !!foundW.setDisabled && foundW.setDisabled(false)
             }
@@ -700,11 +755,73 @@
       },
 
       /**
+       * 设置或取消设置表单为只读查看模式
+       * @param readonlyFlag
+       */
+       setReadMode(readonlyFlag = true) {
+        this.readModeFlag = readonlyFlag
+      },
+
+      /**
+       * 获取表单当前是否只读查看模式
+       * @returns {boolean}
+       */
+      getReadMode() {
+        return this.readModeFlag
+      },
+
+      /**
        * 获取globalDsv对象
        * @returns {*}
        */
       getGlobalDsv() {
         return this.globalDsv
+      },
+
+      /**
+       * 执行数据源请求
+       * @param dsName
+       * @param localDsv
+       */
+       async executeDataSource(dsName, localDsv) {
+        let ds = getDSByName(this.formJsonObj.formConfig, dsName)
+        let newDsv = new Object({})
+        overwriteObj(newDsv, this.globalDsv)
+        overwriteObj(newDsv, localDsv)
+        return await runDataSourceRequest(ds, newDsv, this, false, this.$message)
+      },
+
+      /**
+       * 获取父级VFormRender组件实例
+       * @returns {object}
+       */
+      getParentFormRef() {
+        return this.parentForm
+      },
+
+      /**
+       * 当显示多级嵌套弹窗或抽屉时，获取最顶层VFormRender组件实例
+       * @returns {object}
+       */
+      getTopFormRef() {
+        if (!this.parentForm) {
+          return this
+        }
+
+        let topFormRef = this.parentForm
+        while (topFormRef.parentForm) {
+          topFormRef = topFormRef.parentForm
+        }
+
+        return topFormRef
+      },
+
+      setChildFormRef(childFormRef) {
+        this.childFormRef = childFormRef
+      },
+
+      getChildFormRef() {
+        return this.childFormRef
       },
 
       //--------------------- 以上为组件支持外部调用的API方法 end ------------------//

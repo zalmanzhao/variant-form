@@ -3,7 +3,7 @@
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
     <template v-if="previewState">
-      {{ field.options.multiple ? getLabels() : getLabel() }}
+      {{ optionLabel }}
     </template>
     <template v-else>
       <el-select ref="fieldEditor" v-model="fieldModel" class="full-width-input"
@@ -66,7 +66,7 @@
     components: {
       FormItemWrapper,
     },
-    inject: ['refList', 'formConfig', 'globalOptionData', 'globalModel'],
+    inject: ['refList', 'globalOptionData', 'globalModel'],
     data() {
       return {
         oldFieldValue: null, //field组件change之前的值
@@ -113,25 +113,6 @@
     },
 
     methods: {
-      getLabel () {
-       const item = this.field.options.optionItems.find(item => item.value === this.fieldModel);
-       if (item) {
-        return item.label
-       }
-       return this.fieldModel
-      },
-      getLabels () {
-       let label = []
-       if (this.fieldModel != null) {
-        this.fieldModel.forEach(element => {
-          const item = this.field.options.optionItems.find(item => item.value === element);
-          if (item) {
-            label.push(item.label)
-          }
-        });
-       }
-       return label.join(' ')
-      }
     }
   }
 </script>

@@ -3,7 +3,7 @@
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
     <template v-if="previewState">
-      {{ getLabel() }}
+      {{ optionLabel }}
     </template>
     <template v-else>
       <el-radio-group ref="fieldEditor" v-model="fieldModel"
@@ -63,7 +63,7 @@
     components: {
       FormItemWrapper,
     },
-    inject: ['refList', 'formConfig', 'globalOptionData', 'globalModel'],
+    inject: ['refList', 'globalOptionData', 'globalModel'],
     data() {
       return {
         oldFieldValue: null, //field组件change之前的值
@@ -99,13 +99,7 @@
     },
 
     methods: {
-      getLabel () {
-       const item = this.field.options.optionItems.find(item => item.value === this.fieldModel);
-       if (item) {
-        return item.label
-       }
-       return this.fieldModel
-      }
+
     }
   }
 </script>
