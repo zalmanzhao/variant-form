@@ -743,17 +743,7 @@ export function createDesigner(vueInstance) {
       newCon.id = newCon.type.replace(/-/g, '') + generateId()
       newCon.options.name = newCon.id
       if (newCon.type === 'grid') {
-        let newCol = deepClone( this.getContainerByType('grid-col') )
-        let tmpId = generateId()
-        newCol.id = 'grid-col-' + tmpId
-        newCol.options.name = 'gridCol' + tmpId
-        newCon.cols.push(newCol)
-        //
-        newCol = deepClone(newCol)
-        tmpId = generateId()
-        newCol.id = 'grid-col-' + tmpId
-        newCol.options.name = 'gridCol' + tmpId
-        newCon.cols.push(newCol)
+        newCon.alias === "column-1-grid" ? this.buildColsOfGrid(newCon, 1) : newCon.alias === "column-2-grid" ? this.buildColsOfGrid(newCon, 2) : newCon.alias === "column-3-grid" ? this.buildColsOfGrid(newCon, 3) : newCon.alias === "column-4-grid" && this.buildColsOfGrid(newCon, 4);
       } else if (newCon.type === 'table') {
         let newRow = {cols: []}
         newRow.id = 'table-row-' + generateId()
@@ -955,6 +945,21 @@ export function createDesigner(vueInstance) {
       if (!!formConfigBackup) {
         //this.formConfig = JSON.parse(formConfigBackup)
         overwriteObj(this.formConfig, JSON.parse(formConfigBackup))  /* 用=赋值，会导致inject依赖注入的formConfig属性变成非响应式 */
+      }
+    },
+
+    buildColsOfGrid(gridWidget, col, n) {
+      const l = n || 24 / col;
+      for (let i = 0; i < col; i++) {
+          let newGridCol = deepClone(this.getContainerByType("grid-col"))
+          let tmpId = generateId()
+          newGridCol.id = "grid-col-" + tmpId
+          newGridCol.options.name = "gridCol" + tmpId
+          newGridCol.options.span = l
+          newGridCol.options.md = l
+          newGridCol.options.sm = l
+          newGridCol.options.xs = l
+          gridWidget.cols.push(newGridCol)
       }
     },
 

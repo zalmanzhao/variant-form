@@ -365,7 +365,6 @@ export default {
       } else {
         this.formModel[this.fieldKeyName] = value
       }
-      console.log(this.formModel)
     },
 
     handleChangeEvent(value) {  /* input的清除输入小按钮会同时触发handleChangeEvent、handleInputCustomEvent！！ */

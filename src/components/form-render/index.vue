@@ -337,7 +337,6 @@
       addFieldValidateEventHandler() {
         this.$off('fieldValidation')  //移除原有事件监听
         this.$on('fieldValidation', (fieldName) => {
-          console.log(fieldName)
           this.$refs.renderForm.validateField(fieldName)
         })
       },
@@ -524,7 +523,6 @@
         });
 
         this.$refs['renderForm'].validate((valid) => {
-          console.log(valid)
           if (valid) {
             callback(this.formDataModel)
           } else {

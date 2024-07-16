@@ -13,7 +13,7 @@
                      :move="checkContainerMove" @end="onContainerDragEnd">
             <li v-for="(ctn, index) in containers" :key="index" class="container-widget-item" :title="ctn.displayName"
                 @dblclick="addContainerByDbClick(ctn)">
-              <span><svg-icon :icon-class="ctn.icon" class-name="color-svg-icon" />{{i18n2t(`designer.widgetLabel.${ctn.type}`, `extension.widgetLabel.${ctn.type}`)}}</span>
+              <span><svg-icon :icon-class="ctn.icon" class-name="color-svg-icon" />{{ getWidgetLabel(ctn) }}</span>
             </li>
           </draggable>
         </el-collapse-item>
@@ -24,7 +24,7 @@
                      :clone="handleFieldWidgetClone" ghost-class="ghost" :sort="false">
             <li v-for="(fld, index) in basicFields" :key="index" class="field-widget-item" :title="fld.displayName"
                 @dblclick="addFieldByDbClick(fld)">
-              <span><svg-icon :icon-class="fld.icon" class-name="color-svg-icon" />{{i18n2t(`designer.widgetLabel.${fld.type}`, `extension.widgetLabel.${fld.type}`)}}</span>
+              <span><svg-icon :icon-class="fld.icon" class-name="color-svg-icon" />{{ getWidgetLabel(fld) }}</span>
             </li>
           </draggable>
         </el-collapse-item>
@@ -35,7 +35,7 @@
                      :clone="handleFieldWidgetClone" ghost-class="ghost" :sort="false">
             <li v-for="(fld, index) in advancedFields" :key="index" class="field-widget-item" :title="fld.displayName"
                 @dblclick="addFieldByDbClick(fld)">
-              <span><svg-icon :icon-class="fld.icon" class-name="color-svg-icon" />{{i18n2t(`designer.widgetLabel.${fld.type}`, `extension.widgetLabel.${fld.type}`)}}</span>
+              <span><svg-icon :icon-class="fld.icon" class-name="color-svg-icon" />{{ getWidgetLabel(fld) }}</span>
             </li>
           </draggable>
         </el-collapse-item>
@@ -154,6 +154,10 @@
       })
     },
     methods: {
+      getWidgetLabel(widget) {
+        return widget.alias ? this.i18n2t(`designer.widgetLabel.${widget.alias}`, `extension.widgetLabel.${widget.alias}`) : this.i18n2t(`designer.widgetLabel.${widget.type}`, `extension.widgetLabel.${widget.type}`)
+      },
+
       isBanned(wName) {
         return this.getBannedWidgets().indexOf(wName) > -1
       },

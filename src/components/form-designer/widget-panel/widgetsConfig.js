@@ -2,8 +2,54 @@
 export const containers = [
   {
     type: 'grid',
+    alias: "column-1-grid",
     category: 'container',
-    icon: 'grid',
+    icon: 'column-1-grid',
+    cols: [],
+    options: {
+      name: '',
+      hidden: false,
+      gutter: 12,
+      colHeight: null,  //栅格列统一高度属性，用于解决栅格列设置响应式布局浮动后被挂住的问题！！
+      customClass: '',  //自定义css类名
+    }
+  },
+
+  {
+    type: 'grid',
+    alias: "column-2-grid",
+    category: 'container',
+    icon: 'column-2-grid',
+    cols: [],
+    options: {
+      name: '',
+      hidden: false,
+      gutter: 12,
+      colHeight: null,  //栅格列统一高度属性，用于解决栅格列设置响应式布局浮动后被挂住的问题！！
+      customClass: '',  //自定义css类名
+    }
+  },
+
+  {
+    type: 'grid',
+    alias: "column-3-grid",
+    category: 'container',
+    icon: 'column-3-grid',
+    cols: [],
+    options: {
+      name: '',
+      hidden: false,
+      gutter: 12,
+      colHeight: null,  //栅格列统一高度属性，用于解决栅格列设置响应式布局浮动后被挂住的问题！！
+      customClass: '',  //自定义css类名
+    }
+  },
+
+  {
+    type: 'grid',
+    alias: "column-4-grid",
+    category: 'container',
+    icon: 'column-4-grid',
     cols: [],
     options: {
       name: '',
