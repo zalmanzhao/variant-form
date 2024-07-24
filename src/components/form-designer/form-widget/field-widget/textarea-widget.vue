@@ -3,7 +3,7 @@
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
     <template v-if="previewState">
-      {{ fieldModel }}
+      <div v-html="fieldModel"></div>
     </template>
     <template v-else>
       <el-input type="textarea" ref="fieldEditor" v-model="fieldModel"

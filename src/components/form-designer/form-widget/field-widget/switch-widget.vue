@@ -3,13 +3,7 @@
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
     <template v-if="previewState">
-      <el-switch ref="fieldEditor" v-model="fieldModel"
-                :disabled="true"
-                :active-text="field.options.activeText" :inactive-text="field.options.inactiveText"
-                :active-color="field.options.activeColor" :inactive-color="field.options.inactiveColor"
-                :width="field.options.switchWidth"
-                @change="handleChangeEvent">
-      </el-switch>
+      <span>{{ contentForReadMode }}</span>
     </template>
     <template v-else>
       <el-switch ref="fieldEditor" v-model="fieldModel"
@@ -71,7 +65,13 @@
       }
     },
     computed: {
+      contentForReadMode() {
+        if (!!this.fieldModel) {
+          return this.field.options.activeText ||  this.i18nt('render.hint.defaultActiveText')
+        }
 
+        return this.field.options.inactiveText || this.i18nt('render.hint.defaultInactiveText')
+      },
     },
     beforeCreate() {
       /* 这里不能访问方法和属性！！ */

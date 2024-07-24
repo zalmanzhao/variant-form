@@ -15,7 +15,7 @@
     <div :key="widget.id" class="sub-form-container"
          :class="{'selected': selected}" @click.stop="selectWidget(widget)">
       <div class="grid-sub-form">
-        <draggable :list="widget.widgetList" class="draggable-div" v-bind="{group:'dragGroup', ghostClass: 'ghost',animation: 200}"
+        <draggable :list="widget.widgetList" v-bind="{group:'dragGroup', ghostClass: 'ghost',animation: 200}"
               :component-data="{name: 'fade'}"
                handle=".drag-handler"
                @end="onSubFormDragEnd"
@@ -116,8 +116,8 @@
     ::v-deep .grid-sub-form {
       min-height: 68px;
       
-      .draggable-div {
-        height: 100%;
+      .form-widget-list {
+        min-height: 28px;
       }
 
       div.sub-form-table-column {

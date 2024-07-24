@@ -2,35 +2,19 @@
   <form-item-wrapper :designer="designer" :field="field" :rules="rules" :design-state="designState"
                      :parent-widget="parentWidget" :parent-list="parentList" :index-of-parent-list="indexOfParentList"
                      :sub-form-row-index="subFormRowIndex" :sub-form-col-index="subFormColIndex" :sub-form-row-id="subFormRowId">
-    <template v-if="previewState">
-      <el-upload :disabled="true"
-                :action="realUploadURL" :headers="uploadHeaders" :data="uploadData"
-                :with-credentials="field.options.withCredentials"
-                :multiple="field.options.multipleSelect" :file-list="fileList" :show-file-list="field.options.showFileList"
-                list-type="picture-card" :class="{'hideUploadDiv': true}"
-                :limit="field.options.limit" :on-exceed="handlePictureExceed" :on-preview="handlePicturePreview"
-                :before-upload="beforePictureUpload"
-                :on-success="handlePictureUpload" :on-error="handleUploadError" :on-remove="handlePictureRemove">
-      </el-upload>
-    </template>
-    <template v-else>
-      <!-- el-upload增加:name="field.options.name"后，会导致又拍云上传失败！故删除之！！ -->
-      <el-upload @paste="handlePaste" ref="fieldEditor" :disabled="field.options.disabled"
-                :action="realUploadURL" :headers="uploadHeaders" :data="uploadData"
-                :with-credentials="field.options.withCredentials"
-                :multiple="field.options.multipleSelect" :file-list="fileList" :show-file-list="field.options.showFileList"
-                list-type="picture-card" :class="{'hideUploadDiv': uploadBtnHidden}"
-                :limit="field.options.limit" :on-exceed="handlePictureExceed" :on-preview="handlePicturePreview"
-                :before-upload="beforePictureUpload"
-                :on-success="handlePictureUpload" :on-error="handleUploadError" :on-remove="handlePictureRemove">
+    <!-- el-upload增加:name="field.options.name"后，会导致又拍云上传失败！故删除之！！ -->
+    <el-upload ref="fieldEditor" :disabled="field.options.disabled || previewState"
+               :action="realUploadURL" :headers="uploadHeaders" :data="uploadData"
+               :with-credentials="field.options.withCredentials"
+               :multiple="field.options.multipleSelect" :file-list="fileList" :show-file-list="field.options.showFileList"
+               list-type="picture-card" :class="{'hideUploadDiv': uploadBtnHidden || previewState}"
+               :limit="field.options.limit" :on-exceed="handlePictureExceed" :on-preview="handlePicturePreview"
+               :before-upload="beforePictureUpload"
+               :on-success="handlePictureUpload" :on-error="handleUploadError" :on-remove="handlePictureRemove">
         <div slot="tip" class="el-upload__tip"
             v-if="!!field.options.uploadTip">{{field.options.uploadTip}}</div>
-        <i class="el-icon-plus avatar-uploader-icon"></i>
-      </el-upload>
-      <div id="preview" @paste="handlePaste">
-          <span><i class="el-icon-s-opportunity" style="color:#FB894C"></i>{{i18nt('designer.hint.ctrlVImage')}}</span>
-      </div>
-    </template>
+        <i class="el-icon-plus avatar-uploader-icon" @paste="handlePaste"></i>
+    </el-upload>
 
     <el-dialog title="" v-if="showPreviewDialogFlag" :visible.sync="showPreviewDialogFlag"
                v-dialog-drag append-to-body width="70%"
@@ -173,6 +157,7 @@
       },
 
       handlePicturePreview(file) {
+        console.log(file)
         this.previewUrl = file.url
         this.showPreviewDialogFlag = true
       },

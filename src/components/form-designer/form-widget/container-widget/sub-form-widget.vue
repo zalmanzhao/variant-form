@@ -16,7 +16,8 @@
          :class="{'selected': selected}" @click.stop="selectWidget(widget)">
       <el-form label-position="top">
         <div class="sub-form-table">
-          <draggable :list="widget.widgetList" class="draggable-div" v-bind="{group:'dragGroup', ghostClass: 'ghost',animation: 200}"
+          <draggable :list="widget.widgetList" v-bind="{group:'dragGroup', ghostClass: 'ghost',animation: 200}"
+                    :component-data="{name: 'fade'}"
                      handle=".drag-handler"
                      @add="(evt) => onSubFormDragAdd(evt, widget.widgetList)"
                      @end="onSubFormDragEnd"
@@ -115,8 +116,8 @@
     ::v-deep .sub-form-table {
       min-height: 68px;
       
-      .draggable-div {
-        height: 100%;
+      .form-widget-list {
+        min-height: 28px;
       }
 
       div.sub-form-table-column {

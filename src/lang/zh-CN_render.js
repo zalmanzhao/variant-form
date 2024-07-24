@@ -4,6 +4,8 @@ export default {
     hint: {
       prompt: '提示',
       confirm: '确定',
+      defaultActiveText: '是',
+      defaultInactiveText: '否',
       cancel: '取消',
 
       selectPlaceholder: '请选择',
