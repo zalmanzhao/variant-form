@@ -17,9 +17,10 @@
       <template #file="{ file }">
         <div class="upload-file-list">
           <span class="upload-file-name" :title="file.name">{{file.name}}</span>
+          <span class="upload-file-name" v-if="file.size">（{{formatFileSize(file.size)}}）</span>
           <a :href="file.url" download="" target="_blank">
             <i class="el-icon-download file-action" :title="i18nt('render.hint.downloadFile')"></i></a>
-          <i class="el-icon-delete file-action" :title="i18nt('render.hint.removeFile')" v-if="!field.options.disabled"
+          <i class="el-icon-delete file-action" :title="i18nt('render.hint.removeFile')" v-if="!field.options.disabled && !previewState"
             @click="removeUploadFile(file.name, file.url, file.uid)"></i>
         </div>
       </template>
@@ -184,12 +185,16 @@
         if (!!customResult && !!customResult.name && !!customResult.url) {
           this.fieldModel.push({
             name: customResult.name,
-            url: customResult.url
+            url: customResult.url,
+            file_name: customResult.file_name ? customResult.file_name : '',
+            size: customResult.size ? customResult.size : 0
           })
         } else if (!!defaultResult && !!defaultResult.name && !!defaultResult.url) {
           this.fieldModel.push({
             name: defaultResult.name,
-            url: defaultResult.url
+            url: defaultResult.url,
+            file_name: defaultResult.file_name ? defaultResult.file_name : '',
+            size: defaultResult.size ? defaultResult.size : 0
           })
         } else {
           this.fieldModel = deepClone(fileList)
@@ -219,6 +224,8 @@
           } else {
             file.url = file.url || res.url
           }
+          file.file_name = res.file_name ? res.file_name : ''
+          file.size = res.size ? res.size : 0
           this.fileList = deepClone(fileList)
           this.uploadBtnHidden = fileList.length >= this.field.options.limit
         }
@@ -266,6 +273,14 @@
         }
       },
 
+      formatFileSize (bytes, decimals = 2) {
+        if (bytes === 0) return '0 B';
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(decimals)) + ' ' + sizes[i];
+      },
+      
     }
   }
 </script>
@@ -302,6 +317,10 @@
   .upload-file-list {
     font-size: 12px;
 
+    .upload-file-name {
+      color: #606266;
+    }
+
     .file-action {
       color: $--color-primary;
       margin-left: 5px;
@@ -309,5 +328,7 @@
       cursor: pointer;
     }
   }
+
+  
 
 </style>

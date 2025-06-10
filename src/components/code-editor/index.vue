@@ -1,7 +1,7 @@
 <template>
   <div class="ace-container">
     <!-- 官方文档中使用id，这里禁止使用，在后期打包后容易出现问题，使用 ref 或者 DOM 就行 -->
-    <div :style="{'height': height + 'px'}" class="ace-editor" ref="ace"></div>
+    <div :style="{'height': height + 'px'}" class="ace-editor" ref="ace" @mousedown="startDrag"></div>
   </div>
 </template>
 
@@ -156,6 +156,11 @@
         return this.aceEditor.getSession().getAnnotations()
       },
 
+      // 开始拖拽
+      startDrag(e) {
+        this.aceEditor.resize()
+      }
+
     }
   }
 </script>
@@ -164,6 +169,7 @@
   .ace-editor {
     min-height: 200px;
     border: 1px solid #eaeaea;
+    resize: vertical;
   }
   ::v-deep .ace_gutter {
     background: unset;
